@@ -457,7 +457,7 @@ SHA-256 protects against corrupted or incomplete downloads.
 On Windows PowerShell:
 
 ```powershell
-Get-FileHash .\2nd-and-3rd-95-analysis-v1.0.1.zip -Algorithm SHA256
+Get-FileHash .\2nd-and-3rd-95-analysis-v1.0.0.zip -Algorithm SHA256
 ```
 
 Example:
