@@ -1,9 +1,9 @@
 {
-    "version": "1.0.1",
+    "version": "1.0.0",
     "release_date": "2026-08-28",
     "mandatory": false,
-    "download_url": "https://github.com/netocodez/95-exe/releases/download/v1.0.1/2nd-and-3rd-95-analysis-v1.0.1.zip",
-    "sha256": "BDA6FE4AE0E50403B2776D66458D7EDDF6280F2BED74328B6DD9483CDB4C2C5D",
+    "download_url": "https://github.com/netocodez/95-exe/releases/download/v1.0.0/2nd-and-3rd-95-analysis-v1.0.0.zip",
+    "sha256": "29DB706AF4B3CF43004996EED212922DE4B387E5582E339FF795E0D90E199281",
     "release_notes": [
         "Updated UI styling and refined form input layout",
         "Added live version badge display in header",

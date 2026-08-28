@@ -37,23 +37,33 @@ def _is_admin() -> bool:
 
 
 def _elevate_if_needed() -> bool:
-    """Re-run updater with UAC elevation when Program Files is protected."""
+    """Re-run updater with UAC elevation when target directory is protected."""
     if not _is_windows() or _is_admin():
         return False
 
+    print("[UPDATER] Requesting administrator elevation...")
     params = " ".join(f'"{arg}"' for arg in sys.argv[1:])
-    executable = sys.executable
-    result = ctypes.windll.shell32.ShellExecuteW(
-        None,
-        "runas",
-        executable,
-        params,
-        None,
-        1,
-    )
-    if result <= 32:
-        raise RuntimeError(f"Unable to request administrator privileges (code {result}).")
-    return True
+    
+    # In Nuitka --onefile mode, sys.executable points to the temp directory.
+    # sys.argv[0] gives the path to the actual launcher executable on disk.
+    executable = os.path.abspath(sys.argv[0])
+
+    try:
+        result = ctypes.windll.shell32.ShellExecuteW(
+            None,
+            "runas",
+            executable,
+            params,
+            None,
+            1,
+        )
+        if result <= 32:
+            print(f"[UPDATER] UAC prompt declined or failed (code {result}). Continuing without elevation...")
+            return False
+        return True
+    except Exception as err:
+        print(f"[UPDATER] Elevation request failed: {err}. Proceeding without elevation...")
+        return False
 
 
 def _wait_for_parent(parent_pid: int) -> None:

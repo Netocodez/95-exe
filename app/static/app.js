@@ -19,9 +19,9 @@
 
     // Handle file uploads and data processing via AJAX
     function uploadAndProcess(endpoint) {
-        const file1 = $("#fileInput")[0].files[0];
-        const file2 = $("#fileInput2")[0].files[0];
-        const file3 = $("#fileInput3")[0].files[0];
+        const file1 = $("#fileInput")[0]?.files[0];
+        const file2 = $("#fileInput2")[0]?.files[0];
+        const file3 = $("#fileInput3")[0]?.files[0];
         const endDate = $("#endDate").val();
         const allowedExtensions = /\.(xlsx|xls|csv)$/i;
 
@@ -95,6 +95,45 @@
         $("#updateModal").removeClass("hidden");
     }
 
+    // Load application version from /api/app-info
+    function loadAppInfo() {
+        $.getJSON("/api/app-info")
+            .done(function (data) {
+                if (data && data.version) {
+                    $("#appVersionBadge")
+                        .text(`v${data.version}`)
+                        .removeClass("hidden");
+                }
+            })
+            .fail(function (xhr, status, error) {
+                console.error("App Info endpoint error:", error);
+            });
+    }
+
+    // Load license status badge from /api/license-status
+    function loadLicenseStatus() {
+        $.getJSON("/api/license-status")
+            .done(function (data) {
+                const $badge = $("#licenseBadge");
+                if (data && data.is_trial !== undefined) {
+                    if (data.is_trial) {
+                        $badge
+                            .html(`⏳ <strong>Trial Version</strong> — ${data.days_remaining ?? 0} Days Remaining`)
+                            .addClass("badge-trial")
+                            .removeClass("badge-full hidden");
+                    } else {
+                        $badge
+                            .html(`✓ <strong>Licensed Version</strong>`)
+                            .addClass("badge-full")
+                            .removeClass("badge-trial hidden");
+                    }
+                }
+            })
+            .fail(function (xhr, status, error) {
+                console.error("License endpoint error:", error);
+            });
+    }
+
     // Query application update check endpoint
     function checkForApplicationUpdate(showModal = false) {
         $.getJSON("/api/update/check")
@@ -141,51 +180,11 @@
         });
     }
 
-    // Load license state and app version information
-    function loadLicenseAndVersion() {
-        $.getJSON("/api/license-status")
-            .done(function (data) {
-                // 1. License Status Badge
-                const $badge = $("#licenseBadge");
-                if (data && data.is_trial !== undefined) {
-                    if (data.is_trial) {
-                        $badge
-                            .html(`⏳ <strong>Trial Version</strong> — ${data.days_remaining ?? 0} Days Remaining`)
-                            .addClass("badge-trial")
-                            .removeClass("badge-full hidden");
-                    } else {
-                        $badge
-                            .html(`✓ <strong>Licensed Version</strong>`)
-                            .addClass("badge-full")
-                            .removeClass("badge-trial hidden");
-                    }
-                }
-
-                // 2. Version Badge (Falls back to "1.0.0" if API key is missing)
-                const currentVersion = data.version || data.app_version || (data.metadata && data.metadata.version) || "1.0.0";
-                
-                $("#appVersionBadge")
-                    .text(`v${currentVersion}`)
-                    .removeClass("hidden");
-            })
-            .fail(function (xhr, status, error) {
-                console.error("License endpoint error:", error);
-                // Fallback display on network/server error
-                $("#appVersionBadge")
-                    .text("v1.0.0")
-                    .removeClass("hidden");
-            });
-    }
-
-    // Ensure execution runs when DOM is ready
-    $(document).ready(function () {
-        loadLicenseAndVersion();
-    });
-
     // Document ready initialization
     $(document).ready(function () {
         setTodayDate();
-        loadLicenseAndVersion();
+        loadAppInfo();
+        loadLicenseStatus();
 
         // Bind update dialog events
         $("#updateNowBtn").click(openUpdateModal);
