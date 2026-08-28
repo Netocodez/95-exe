@@ -1,12 +1,12 @@
 {
-    "version": "1.0.0",
+    "version": "1.0.1",
     "release_date": "2026-08-28",
     "mandatory": false,
-    "download_url": "https://github.com/netocodez/95-exe/releases/download/v1.0.0/2nd-and-3rd-95-analysis-v1.0.0.zip",
-    "sha256": "B166B9270B6A034B8D73D18ACEAE9E7E20EC1B6DE1CBA84D1C7A44CD6CDB2410",
+    "download_url": "https://github.com/netocodez/95-exe/releases/download/v1.0.1/2nd-and-3rd-95-analysis-v1.0.1.zip",
+    "sha256": "BDA6FE4AE0E50403B2776D66458D7EDDF6280F2BED74328B6DD9483CDB4C2C5D",
     "release_notes": [
-        "Initial release of 2nd & 3rd 95 Analyzer",
-        "Integrated Windows system tray controller",
-        "Added background auto-updater support"
+        "Updated UI styling and refined form input layout",
+        "Added live version badge display in header",
+        "Improved automated updater verification pipeline"
     ]
 }

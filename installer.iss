@@ -1,5 +1,5 @@
 ﻿#define MyAppName "2nd and 3rd 95 Analysis"
-#define MyAppVersion "1.0.0"
+#define MyAppVersion "1.0.1"
 #define MyAppPublisher "Onyeneto Chinedu"
 #define MyAppURL "https://netocodez.github.io/My-Profile/"
 #define MyAppExeName "2nd-and-3rd-95-analysis.exe"
@@ -35,6 +35,9 @@ ArchitecturesInstallIn64BitMode=x64compatible
 
 DisableProgramGroupPage=yes
 ChangesAssociations=no
+
+[Tasks]
+Name: "desktopicon"; Description: "{cm:CreateDesktopIcon}"; GroupDescription: "{cm:AdditionalIcons}"; Flags: unchecked
 
 [Files]
 Source: "run.dist\*"; DestDir: "{app}"; Flags: ignoreversion recursesubdirs createallsubdirs
