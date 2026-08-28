@@ -16,8 +16,8 @@ print(f"[APP] Starting {APP_NAME} v{__version__}")
 
 # LicenseHub configuration remains compatible with the existing SDK integration.
 license_manager = LicenseManager(
-    server_url="https://licensehub-uejs.onrender.com",
-    api_key="6c5bc98644a81d444621fad9a04370afa187eb7adbf8511c0eb8ecd782c741b7",
+    server_url="https://licensehub.up.railway.app",
+    api_key="567ee1ba294c8f88f0c4583583e15bdd9e35a872cb5fb01768004ac002e3a351",
     app_name="95 Analyzer",
     app_version=__version__,
     org_id="Netocodes",
