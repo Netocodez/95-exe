@@ -1,11 +1,12 @@
 {
-  "version": "1.0.0",
-  "release_date": "2026-08-28",
-  "mandatory": false,
-  "download_url": "",
-  "sha256": "",
-  "release_notes": [
-    "Initial release with in-app update support.",
-    "Added Windows system-tray controls."
-  ]
+    "version": "1.0.0",
+    "release_date": "2026-08-28",
+    "mandatory": false,
+    "download_url": "https://github.com/netocodez/2nd-and-3rd-95-analysis/releases/download/v1.0.0/2nd-and-3rd-95-analysis-v1.0.0.zip",
+    "sha256": "019E751EDA50052529AB6BDD405CF91687B201F34B11CB0499B7D904FF06A24",
+    "release_notes": [
+        "Initial release of 2nd & 3rd 95 Analyzer",
+        "Integrated Windows system tray controller",
+        "Added background auto-updater support"
+    ]
 }

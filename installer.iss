@@ -1,4 +1,4 @@
-#define MyAppName "2nd and 3rd 95 Analysis"
+﻿#define MyAppName "2nd and 3rd 95 Analysis"
 #define MyAppVersion "1.0.0"
 #define MyAppPublisher "Onyeneto Chinedu"
 #define MyAppURL "https://netocodez.github.io/My-Profile/"

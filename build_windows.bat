@@ -12,13 +12,17 @@ if not defined APP_VERSION (
 )
 
 echo ==============================================
-echo   %APP_NAME% - WINDOWS BUILD
+echo   "%APP_NAME%" - WINDOWS BUILD
 echo   Version: %APP_VERSION%
 echo ==============================================
 
-call .venv\Scripts\activate.bat
-if errorlevel 1 (
-    echo Could not activate .venv
+rem Check for 'venv' first, fallback to '.venv'
+if exist venv\Scripts\activate.bat (
+    call venv\Scripts\activate.bat
+) else if exist .venv\Scripts\activate.bat (
+    call .venv\Scripts\activate.bat
+) else (
+    echo Could not find virtual environment activate script.
     exit /b 1
 )
 
@@ -64,7 +68,7 @@ powershell -NoProfile -ExecutionPolicy Bypass -Command "(Get-Content installer.i
 echo.
 echo [3/3] Build complete.
 echo Main distribution : run.dist\
-echo Update package    : 2nd-and-3rd-95-analysis-v%APP_VERSION%.zip
+echo Update package     : 2nd-and-3rd-95-analysis-v%APP_VERSION%.zip
 echo.
 echo Next steps:
 echo   1. Create GitHub Release tag v%APP_VERSION%.

@@ -1,0 +1,254 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>2ND & 3RD 95 ANALYZER</title>
+    <link rel="stylesheet" href="static/style.css">
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+</head>
+<body>
+    <button id="helpBtn" title="Help">?</button>
+    <div id="helpBox" class="hidden">
+        <h3>Help Guide</h3>
+        <ul>
+            <li><strong>Reporting Period</strong>: Select the current reporting period in review.</li>
+            <li><strong>Select one list at a time</strong>: Highly Recommended.</li>
+            <li><strong>Current ART Line List</strong>: Required for processing DPT report.</li>
+            <li><strong>Previous ART Line List</strong>: Optional, helps to track status change better (Restart).</li>
+            <li><strong>CASE MANAGER LINE LIST</strong>: Optional, must contain UUID and CASE MANAGER column.</li>
+            <li>Ensure all files are in .csv (recommended), .xlsx, or .xls format.</li>
+            <li>Click "ART LINE LIST TO 2ND & 3RD 95 ANALYSIS" to generate report.</li>
+        </ul>
+        <p>For any issues, contact <a href="mailto:netocodes@gmail.com">netocodes@gmail.com</a> or call +2348134453841</p>
+    </div>
+
+    <div class="container">
+        <!-- License Status Badge -->
+        <div id="licenseBadge" class="license-badge hidden"></div>
+        <h1>AHNI NMRS 2ND AND 3RD 95 ANALYZER</h1>
+        <h2>Making data analysis easier and more accurate!</h2>
+
+        <div class="form-row">
+            <div class="form-group">
+                <label for="endDate"><p>Select Reporting Period:</p></label>
+                <input type="date" id="endDate" name="endDate">
+            </div>
+        </div>
+
+        <div class="form-row">
+            <div class="form-group">
+                <p>Current ART Line List For a Facility <span class="required">(Required)</span></p>
+                <input type="file" id="fileInput" name="file1" accept=".xlsx,.xls,.csv" />
+            </div>
+
+            <div class="form-group">
+                <p>Previous Week ART Line List</p>
+                <input type="file" id="fileInput2" name="file2" accept=".xlsx,.xls,.csv" />
+            </div>
+
+            <div class="form-group">
+                <p>ART Line list with UUID & CASE MANAGER Column</p>
+                <input type="file" id="fileInput3" name="file3" accept=".xlsx,.xls,.csv" />
+            </div>
+        </div>
+
+        <div id="uploadMessage"></div>
+
+        <div class="button-group">
+            <button id="fetchData">ART LINE LIST TO 3RD 95</button>
+            <button id="fetchData2nd">ART LINE LIST TO 2ND 95</button>
+        </div>
+
+        <div id="loading" class="hidden">
+            <div class="spinner"></div> Fetching and Analyzing data, please wait...
+        </div>
+        <div id="message"></div>
+
+        <a id="downloadLinkgray" class="hidden" href="#" target="_blank">Download File</a>
+    </div>
+
+
+    <div id="updateBanner" class="update-banner hidden">
+        <div>
+            <strong>New version available</strong>
+            <span id="updateText"></span>
+        </div>
+        <div class="update-actions">
+            <button id="updateNowBtn" type="button">Update Now</button>
+            <button id="updateLaterBtn" type="button" class="secondary-btn">Later</button>
+        </div>
+    </div>
+
+    <div id="updateModal" class="update-modal hidden">
+        <div class="update-card">
+            <button id="closeUpdateModal" class="update-close" type="button">&times;</button>
+            <h3>Update Available</h3>
+            <p id="updateModalVersion"></p>
+            <ul id="updateNotes"></ul>
+            <div id="updateProgress" class="update-progress hidden">
+                Downloading and preparing the update. Please wait...
+            </div>
+            <div class="update-modal-actions">
+                <button id="confirmUpdateBtn" type="button">Update Now</button>
+                <button id="cancelUpdateBtn" type="button" class="secondary-btn">Later</button>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        const today = new Date();
+        const year = today.getFullYear();
+        const month = String(today.getMonth() + 1).padStart(2, '0');
+        const day = String(today.getDate()).padStart(2, '0');
+        document.getElementById('endDate').value = `${year}-${month}-${day}`;
+
+        function uploadAndProcess(endpoint) {
+            const file1 = $("#fileInput")[0].files[0];
+            const file2 = $("#fileInput2")[0].files[0];
+            const file3 = $("#fileInput3")[0].files[0];
+            const endDate = $("#endDate").val();
+            const allowedExtensions = /\.(xlsx|xls|csv)$/i;
+
+            $("#message").removeClass("message errmessage").text("");
+            $("#downloadLinkgray").addClass("hidden");
+
+            if (!file1) {
+                return showError("Please select Current ART Line List Excel file.");
+            }
+            if (!allowedExtensions.test(file1.name)) {
+                return showError("Current ART Line List must be an Excel file or CSV.");
+            }
+            if (file2 && !allowedExtensions.test(file2.name)) {
+                return showError("Previous ART Line List must be an Excel file or CSV.");
+            }
+            if (file3 && !allowedExtensions.test(file3.name)) {
+                return showError("Case Manager file must be an Excel file or CSV.");
+            }
+
+            const formData = new FormData();
+            formData.append("file1", file1);
+            if (file2) formData.append("file2", file2);
+            if (file3) formData.append("file3", file3);
+            formData.append("endDate", endDate);
+
+            $("#loading").removeClass("hidden");
+
+            $.ajax({
+                url: endpoint,
+                type: "POST",
+                data: formData,
+                processData: false,
+                contentType: false,
+                success: function (response) {
+                    $("#loading").addClass("hidden");
+                    $("#message").text(response.message).addClass("message");
+                    if (response.download_url) {
+                        $("#downloadLinkgray")
+                            .attr("href", response.download_url)
+                            .removeClass("hidden")
+                            .addClass("downloadLink");
+                    }
+                },
+                error: function (xhr) {
+                    $("#loading").addClass("hidden");
+                    let errMsg = "Error fetching and processing data.";
+                    if (xhr.responseJSON && xhr.responseJSON.message) {
+                        errMsg = xhr.responseJSON.message;
+                    }
+                    showError(errMsg);
+                }
+            });
+        }
+
+        function showError(message) {
+            $("#message").text(message).addClass("errmessage");
+        }
+
+        let availableUpdate = null;
+
+        function showUpdate(update) {
+            availableUpdate = update;
+            $("#updateText").text(` Version ${update.version} is available.`);
+            $("#updateBanner").removeClass("hidden");
+
+            $("#updateModalVersion").text(`Current version: ${update.current_version}  →  New version: ${update.version}`);
+            const notes = Array.isArray(update.release_notes) ? update.release_notes : [];
+            $("#updateNotes").empty();
+            notes.forEach(note => $("#updateNotes").append($('<li>').text(note)));
+            $("#updateModal").removeClass("hidden");
+        }
+
+        function checkForApplicationUpdate(showModal = false) {
+            $.getJSON("/api/update/check")
+                .done(function (data) {
+                    if (data.update_available) {
+                        showUpdate(data);
+                    } else if (showModal) {
+                        alert("You are already using the latest version.");
+                    }
+                })
+                .fail(function () {
+                    if (showModal) {
+                        alert("Unable to check for updates. Please check your internet connection and try again.");
+                    }
+                });
+        }
+
+        function installUpdate() {
+            if (!availableUpdate) return;
+            $("#confirmUpdateBtn, #updateNowBtn").prop("disabled", true);
+            $("#cancelUpdateBtn, #updateLaterBtn, #closeUpdateModal").prop("disabled", true);
+            $("#updateProgress").removeClass("hidden");
+
+            $.ajax({
+                url: "/api/update/install",
+                type: "POST",
+                contentType: "application/json",
+                success: function () {
+                    $("#updateProgress").text("Update installed. Restarting the analyzer...");
+                },
+                error: function (xhr) {
+                    const message = xhr.responseJSON && xhr.responseJSON.message
+                        ? xhr.responseJSON.message
+                        : "The update could not be installed.";
+                    alert(message);
+                    $("#confirmUpdateBtn, #updateNowBtn").prop("disabled", false);
+                    $("#cancelUpdateBtn, #updateLaterBtn, #closeUpdateModal").prop("disabled", false);
+                    $("#updateProgress").addClass("hidden");
+                }
+            });
+        }
+
+        $(document).ready(function () {
+            $("#updateNowBtn, #confirmUpdateBtn").click(installUpdate);
+            $("#updateLaterBtn, #cancelUpdateBtn, #closeUpdateModal").click(function () {
+                $("#updateModal").addClass("hidden");
+            });
+
+            // Fetch and display license status on page load
+            $.getJSON("/api/license-status", function (data) {
+                const $badge = $("#licenseBadge");
+                if (data.is_trial) {
+                    $badge
+                        .html(`⏳ <strong>Trial Version</strong> — ${data.days_remaining} Days Remaining`)
+                        .addClass("badge-trial")
+                        .removeClass("hidden");
+                } else {
+                    $badge
+                        .html(`✓ <strong>Licensed Version</strong>`)
+                        .addClass("badge-full")
+                        .removeClass("hidden");
+                }
+            });
+
+            $("#fetchData").click(() => uploadAndProcess("/fetch"));
+            $("#fetchData2nd").click(() => uploadAndProcess("/fetch2nd95"));
+            $("#helpBtn").click(() => $("#helpBox").toggleClass("hidden"));
+
+            // Check for updates after the application UI has loaded.
+            setTimeout(() => checkForApplicationUpdate(false), 2500);
+        });
+    </script>
+</body>
+</html>
