@@ -29,7 +29,7 @@ body {
     display: flex;
     justify-content: center;
     align-items: center;
-    height: 100vh;
+    min-height: 100vh;
 }
 
 /* Container Box */
@@ -79,7 +79,13 @@ button {
 
 button:hover {
     background: linear-gradient(to right, var(--color-primary-dark), #003d80);
-    transform: scale(1.05);
+    transform: scale(1.03);
+}
+
+button:disabled {
+    opacity: 0.6;
+    cursor: not-allowed;
+    transform: none !important;
 }
 
 /* Download Links */
@@ -140,10 +146,10 @@ button:hover {
     color: var(--color-error) !important;
 }
 
-
-/* Hidden Utility */
+/* CRITICAL FIX: Ensure hidden elements never display or catch click events */
 .hidden {
-    display: none;
+    display: none !important;
+    pointer-events: none !important;
 }
 
 /* Grouped Buttons */
@@ -183,16 +189,15 @@ input[type="file"]{
     background: #fafafa;
 }
 
-input[type="month"] {
+input[type="month"], input[type="date"] {
     display: block;
-    margin: 0 auto;               /* Centers it horizontally */
-    width: 50%;   
+    margin: 0 auto;
+    width: 100%;
     padding: 6px;
     font-size: 1rem;
     border: 1px solid #ccc;
     border-radius: 4px;
     background: #fafafa;
-    align-self: center;
 }
 
 .date-picker-group {
@@ -239,11 +244,6 @@ input[type="month"] {
     z-index: 999;
 }
 
-#helpBox.hidden {
-    display: none;
-}
-
-
 /* Animations */
 @keyframes fadeIn {
     from {
@@ -253,31 +253,6 @@ input[type="month"] {
     to {
         opacity: 1;
         transform: translateY(0);
-    }
-}
-
-/* Responsive Design */
-@media (max-width: 600px) {
-    .container {
-        width: 90vw;
-        padding: 20px;
-    }
-
-    h1 {
-        font-size: 1.2rem;
-    }
-
-    h2 {
-        font-size: 0.85rem;
-    }
-
-    .form-group {
-        min-width: 100%;
-    }
-
-    button, .downloadLink, .downloadLinkgray {
-        font-size: 0.9rem;
-        padding: 10px 14px;
     }
 }
 
@@ -342,12 +317,13 @@ input[type="month"] {
 .update-banner span { color: #4b5563; font-size: 14px; }
 .update-actions { display: flex; gap: 8px; }
 .update-actions button, .update-modal-actions button { margin-top: 0; }
-.secondary-btn { background: #6c757d !important; }
+.secondary-btn { background: var(--color-gray) !important; }
+.secondary-btn:hover { background: var(--color-gray-dark) !important; }
 
 .update-modal {
     position: fixed;
     inset: 0;
-    background: rgba(0,0,0,.45);
+    background: rgba(0,0,0,.5);
     display: flex;
     align-items: center;
     justify-content: center;
@@ -367,6 +343,7 @@ input[type="month"] {
 
 .update-card h3 { margin-top: 0; color: #333; }
 .update-card li { margin-bottom: 6px; color: #555; }
+
 .update-close {
     position: absolute;
     right: 12px;
@@ -375,12 +352,44 @@ input[type="month"] {
     color: #555 !important;
     box-shadow: none !important;
     font-size: 24px;
+    line-height: 1;
     padding: 4px 10px;
+    width: auto !important;
 }
+
+.update-close:hover {
+    color: #000 !important;
+    background: transparent !important;
+    transform: none !important;
+}
+
 .update-modal-actions { display: flex; gap: 10px; margin-top: 20px; }
 .update-progress { margin-top: 15px; padding: 12px; border-radius: 8px; background: #f3f6f9; color: #495057; font-weight: bold; }
 
+/* Responsive Design */
 @media (max-width: 650px) {
+    .container {
+        width: 90vw;
+        padding: 20px;
+    }
+
+    h1 {
+        font-size: 1.2rem;
+    }
+
+    h2 {
+        font-size: 0.85rem;
+    }
+
+    .form-group {
+        min-width: 100%;
+    }
+
+    button, .downloadLink, .downloadLinkgray {
+        font-size: 0.9rem;
+        padding: 10px 14px;
+    }
+
     .update-banner { flex-direction: column; align-items: stretch; }
     .update-actions button { flex: 1; }
 }
