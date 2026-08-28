@@ -1,0 +1,34 @@
+# Virtual Environment
+venv/
+.venv/
+env/
+
+# Python Cache
+__pycache__/
+*.pyc
+*.pyo
+*.pyd
+
+# Nuitka & Build Outputs
+build/
+dist/
+*.dist/
+*.build/
+*.exe
+
+# Compressed Release Archives
+*.zip
+*.7z
+*.rar
+
+# User Data & Application Outputs
+uploads/
+outputs/
+*.db
+*.sqlite3
+*.log
+
+# IDE & Editor Settings
+.idea/
+.vscode/
+*.swp

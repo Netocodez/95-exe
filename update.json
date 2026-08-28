@@ -1,0 +1,11 @@
+{
+  "version": "1.0.0",
+  "release_date": "2026-08-28",
+  "mandatory": false,
+  "download_url": "",
+  "sha256": "",
+  "release_notes": [
+    "Initial release with in-app update support.",
+    "Added Windows system-tray controls."
+  ]
+}
